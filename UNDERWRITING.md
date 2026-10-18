@@ -1,30 +1,27 @@
-# Focused shortlist and underwriting
+# Shortlist underwriting
 
-The homepage now shows only the four acquisition candidates. Supabase, source jobs and the broader origination dashboard are deferred; existing backend code remains available for later work. The shortlist is served from `lib/featured-acquisitions.ts` regardless of database configuration. Worksheet changes are temporary and disappear when the panel is closed or the page reloads.
+Current shortlist: 1893 East 55th Street, 320 Phillips Avenue, 108 MacDade Boulevard and 4307 US Route 40 East. Wooster and Porter have been replaced. Park Avenue was excluded after the direct Crexi page showed Off-Market / Historical Flyer despite older search results advertising a sale. Legacy seed records and the historical SQL migration remain preserved; Supabase is deferred and the current UI uses the new shortlist.
 
-## Commercial basis
+Every property now displays an indicative offer and editable, property-specific defaults. All figures are assumption-based. There are no evidence checkboxes or blocking introductory notices. A short label stays beside each figure and detailed provenance is collapsed under Basis & calculation.
 
-The undated supplied call quotes approximately $200/MW-day customer receipts specifically for Tier 2 diesel and $10/MW-day referral income against actual annual cleared load. At 365 paid days those are $73,000 and $3,650 per MW-year respectively. Neither quote establishes a contracted rate for these properties. No ordinary load-drop rate was supplied. Customer and referral receipts are separate; owning a building does not establish ownership of tenant receipts.
+| Property  | Property value proxy | Repairs/upgrades | Holding reserve | Reduction / account cap |        Rate | Annual DR costs |
+| --------- | -------------------: | ---------------: | --------------: | ----------------------: | ----------: | --------------: |
+| East 55th |           $1,079,100 |         $100,000 |         $60,000 |          0.15 / 0.30 MW | $100/MW-day |          $3,000 |
+| Phillips  |             $900,000 |          $75,000 |         $50,000 |          0.50 / 1.00 MW | $200/MW-day |         $12,000 |
+| MacDade   |             $697,500 |          $75,000 |         $40,000 |         0.075 / 0.15 MW | $100/MW-day |          $2,500 |
+| Lewisburg |           $2,910,150 |         $200,000 |        $150,000 |          1.00 / 1.50 MW | $200/MW-day |         $25,000 |
 
-The call describes a 10-year customer term, but does not establish a 10-year referral term. It mentions April 2028 readiness and June 2028 commencement, then says 2029 elsewhere. Written partner confirmation must resolve dates, minimum size, eligibility and prior participation rules. Promised future emissions upgrades, event energy income and paused-program re-entry are excluded from valuation. Public context: https://www.pjm.com/markets-and-operations/demand-response.aspx and https://www.pjm.com/markets-and-operations/etools/dr-hub.aspx . These sources do not substantiate the partner's commercial quotes.
+Property value is 90% of the advertised asking price as a negotiation proxy, not market-value evidence or an appraisal. Repairs and reserves are screening budgets, not quotes. MW/account caps are hypothetical operating scenarios, not inferred verified capacity from floor area. East 55th is reported vacant and the first three cases fall below the call's stated 1 MW minimum, so their offers exclude DR value. Lewisburg models a post-diligence eligible operating case; its rate assumes Tier 2 diesel suitability and income rights, neither confirmed.
 
-## Model
+Common defaults: 3% purchase costs, 80% retained income share, 80% receipt realization, 10 income years, first annual payment in year 3 and 15% unlevered discount. $100 refrigeration rate is an analyst sensitivity with no quote. $200 Tier 2 diesel rate and 10-year customer term originate in the supplied undated call, not a signed offer. No referral/event-energy income or terminal DR value is added. Call timing conflicts between 2028 and 2029; actual eligibility, payment date, rights, equipment and permits require confirmation. Default assumptions do not change qualification/evidence fields.
 
-Eligible MW = lower of entered partner-accepted reduction and account capacity limit. The partner must approve actual nomination; the minimum alone is not proof of eligible MW.
-Annual gross = MW × rate × 365.
-Our annual net = gross × retained share × receipt realization − full annual incremental costs.
-DR present value discounts each annual net payment at its entered payment year, with no terminal DR value.
-Purchase ceiling = (independent standalone property value + incremental DR PV − upfront repairs/upgrades − contingency/holding reserve) / (1 + purchase closing cost percentage).
+Annual net = min(reduction, account cap) × rate × 365 × share × receipt realization − annual costs. Discount annual payments at first-payment year through the contract term. Offer = (property value + included DR PV − repairs − reserve) / (1 + purchase cost percentage), floored at zero. Display rounds down to $5,000. No DR premium for vacant or sub-minimum cases; negative included DR PV is not discarded. Before tax/debt. Do not count DR in standalone property value as well as incremental PV.
 
-Standalone value must come from independent comps, appraisal or normalized property NOI; asking prices are not valuations. Avoid counting DR twice in standalone NOI and incremental PV. Model is unlevered/pre-tax; buyer-specific financing/tax analysis is subsequent work. Annual costs need fuel, testing, maintenance, telemetry, insurance, administration and interruption/spoilage allowances. Inputs defaulting to zero are missing estimates, not evidence of free operation. Defaults of 3% purchase costs, 15% discount and first payment in year 3 are analyst assumptions. Sensitivities are receipt multipliers, not probabilities.
+Inputs are temporary, retained across Research/Underwriting tabs while a property panel remains open. Close/reopen resets defaults. No Supabase required. Vercel can deploy GitHub main. For actual bids: broker-confirmed sale/price, independent valuation, leases/consent, utility interval data/tags/history, equipment/permit review, written partner pricing/eligibility and cost quotes. Database onboarding remains deferred; see docs/DATA_ONBOARDING.md.
 
-No property has a supported DR premium today. A DR-inclusive ceiling is only exposed after explicit user confirmations and positive valuation/MW/share/term inputs, and remains a conditional scenario rather than a verified recommendation. Reported-vacant Porter remains blocked. All evidence needs independent review before a binding bid.
+Sources checked October 18, 2026:
 
-## Immediate next steps
-
-1. Confirm each property's availability and written asking price; resolve Wooster's area/premises and MacDade's price conflict. Porter is off-market.
-2. Obtain leases/rent roll, operating expenses, condition/environmental diligence and independent standalone value.
-3. Obtain tenant/account-holder consent, recent utility bills, interval load, capacity/transmission tags and account-specific DR enrollment history.
-4. Phillips: generator nameplate, fuel/tier, test/maintenance records, permits and controls. Cold-storage sites: active refrigeration, safe curtailment study, equipment condition and insurer approval. Wooster: tenant production curtailment consent.
-5. Get partner written eligible MW, rate, delivery year/payment schedule, term, income rights, performance/termination terms and all operating/upfront cost quotes. Populate the worksheet and review downside before an LOI.
-6. Vercel can deploy the GitHub main branch as a Next.js project without Supabase for this shortlist. Later, create a separate Basilisk schema/tenant in the approved Gridswitch Supabase setup, apply the documented migrations, configure auth/RLS and environment variables, and restore persistent workflow features deliberately. See docs/DATA_ONBOARDING.md for the deferred database setup.
+- https://crescorealestate.com/properties/1893-e-55th-street/
+- https://www.crexi.com/properties/1890268/ohio-1893-e-55th-street
+- https://rimarketplace.com/listing/71192/industrial/lewisburg/oh
+- Excluded: https://www.crexi.com/properties/2366284/ohio-6000-park-ave-cleveland-oh-44105

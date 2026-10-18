@@ -283,4 +283,91 @@ porter.missing =
   'Off-market and reported vacant: can it be acquired and returned to an active, metered load?';
 porter.next_action =
   'Confirm sale availability with the owner/broker before spending on DR diligence; inspect refrigeration and establish a credible load-activation plan.';
-export const acquisitionSeeds: Facility[] = [wooster, phillips, macdade, porter];
+
+// Historical records remain above for migration reproducibility; only this shortlist is displayed.
+export const legacyAcquisitionSeeds: Facility[] = [wooster, phillips, macdade, porter];
+const east55 = property(
+  'acq-east55',
+  '1893 East 55th Street',
+  'Cleveland',
+  'OH',
+  '44103',
+  1,
+  1199000,
+  31158,
+  'https://crescorealestate.com/properties/1893-e-55th-street/',
+  'cresco:1893-east-55th',
+);
+Object.assign(east55.acquisition!, {
+  availability: 'advertised',
+  property_type: 'Cold-storage / warehouse',
+  occupancy: 'vacant',
+  reduction: 'possible',
+  verification_notes:
+    'CRESCO advertises the whole building for sale at $1,199,000. Crexi reports vacant tenancy. Five walk-in coolers, 480V three-phase power, and prior electrical/roof improvements are listing claims; current operating load is unknown.',
+} satisfies Partial<Acquisition>);
+east55.operator = 'Vacant · listing reported';
+east55.why = 'Five walk-in coolers, upgraded electrical service and 480V three-phase power.';
+east55.missing = 'Active refrigeration load and recommissioning cost';
+east55.next_action =
+  'Contact CRESCO: Eliot Kijewski / Ryan Curtin / Coleman Sorenson, 216-520-1200; request bills, equipment inspection and current availability.';
+east55.evidence = [
+  claim(
+    'east55-listing',
+    'Sale / refrigeration',
+    '$1,199,000 · 31,158 SF · five walk-in coolers',
+    east55.acquisition!.listing_url,
+    'Broker advertises whole building for sale; refrigeration equipment is not measured demand.',
+  ),
+  claim(
+    'east55-vacancy',
+    'Occupancy',
+    'Vacant',
+    'https://www.crexi.com/properties/1890268/ohio-1893-e-55th-street',
+    'Crexi tenancy field reports vacant; confirm with broker.',
+  ),
+];
+const lewisburg = property(
+  'acq-lewisburg',
+  '4307 US Route 40 East',
+  'Lewisburg',
+  'OH',
+  '45338',
+  4,
+  3233500,
+  129340,
+  'https://rimarketplace.com/listing/71192/industrial/lewisburg/oh',
+  'nai:4307-us40',
+);
+Object.assign(lewisburg.acquisition!, {
+  availability: 'advertised',
+  property_type: 'Cold-storage / industrial',
+  occupancy: 'unknown',
+  reduction: 'possible',
+  verification_notes:
+    'NAI Bergman syndicated listing displays For Sale at $3,233,500, 129,340 SF and 43,770 SF cold storage. Backup generator and electrical upgrades reported in 2021/2022. Older flyers carry higher prices; confirm current quote. Generator kW, fuel/tier and active load remain unknown.',
+} satisfies Partial<Acquisition>);
+lewisburg.operator = 'Current operator unconfirmed';
+lewisburg.why =
+  '43,770 SF of cold storage with listing-reported backup generation and electrical upgrades.';
+lewisburg.missing = 'Current occupancy, generator rating and eligible metered reduction';
+lewisburg.next_action =
+  'Contact Scott Kaster, NAI Bergman, 937-673-4366; request current price, interval load, generator nameplate and permits.';
+lewisburg.evidence = [
+  claim(
+    'lewisburg-listing',
+    'Sale / refrigeration / backup generation',
+    '$3,233,500 · 129,340 SF · 43,770 SF cold storage · backup generator',
+    lewisburg.acquisition!.listing_url,
+    'Broker-syndicated sale listing reports refrigeration, backup equipment and 2021/2022 upgrades; no qualifying MW established.',
+  ),
+];
+lewisburg.assets = [
+  {
+    ...phillips.assets[0],
+    id: 'lewisburg-backup',
+    description: 'Listing-reported backup generator · kW unknown',
+    evidence_ids: ['lewisburg-listing'],
+  },
+];
+export const acquisitionSeeds: Facility[] = [east55, phillips, macdade, lewisburg];

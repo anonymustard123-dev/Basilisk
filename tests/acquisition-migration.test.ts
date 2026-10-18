@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, it, expect } from 'vitest';
 import { PGlite } from '@electric-sql/pglite';
-import { acquisitionSeeds } from '@/lib/featured-acquisitions';
+import { legacyAcquisitionSeeds as acquisitionSeeds } from '@/lib/featured-acquisitions';
 import { seeds } from '@/lib/seeds';
 import { siteKey } from '@/lib/identity';
 describe('acquisition Postgres migration', () => {

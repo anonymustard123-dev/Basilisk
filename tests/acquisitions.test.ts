@@ -26,19 +26,19 @@ describe('pinned acquisition records', () => {
     expect(initialFacilities).toHaveLength(8);
     expect(seeds).toHaveLength(4);
     expect(featuredAcquisitions([...initialFacilities].reverse()).map((f) => f.address)).toEqual([
-      '939 Wooster Road North',
+      '1893 East 55th Street',
       '320 Phillips Avenue',
       '108 MacDade Boulevard',
-      '407 Porter Avenue',
+      '4307 US Route 40 East',
     ]);
     for (const f of acquisitionSeeds) expect(facilitySchema.parse(f)).toBeTruthy();
   });
   it('keeps asking price, area, generator rating, grid demand and qualifying MW separate', () => {
     expect(acquisitionSeeds.map((f) => f.acquisition!.asking_price_usd)).toEqual([
-      1500000, 1000000, 775000, 420000,
+      1199000, 1000000, 775000, 3233500,
     ]);
     expect(acquisitionSeeds.map((f) => f.acquisition!.building_sqft)).toEqual([
-      88438, 53847, 7000, 6300,
+      31158, 53847, 7000, 129340,
     ]);
     for (const f of acquisitionSeeds) {
       expect(f.load.verified_mw).toBeNull();
@@ -50,13 +50,13 @@ describe('pinned acquisition records', () => {
     expect(acquisitionSeeds[1].assets[0].electrical_kw).toBeNull();
   });
   it('does not call off-market, ambiguous or vacant property presently eligible', () => {
-    expect(acquisitionSeeds[0].acquisition!.availability).toBe('unverified');
+    expect(acquisitionSeeds[0].acquisition!.availability).toBe('advertised');
     expect(acquisitionSeeds[2].acquisition!.price_status).toBe('disputed');
     expect(acquisitionSeeds[2].acquisition!.alternate_price_usd).toBe(800000);
-    expect(acquisitionSeeds[3].acquisition!.availability).toBe('off-market');
-    expect(readiness(acquisitionSeeds[3])).toBe('Not Currently Ready');
+    expect(acquisitionSeeds[3].acquisition!.availability).toBe('advertised');
+    expect(readiness(acquisitionSeeds[0])).toBe('Not Currently Ready');
     expect(acquisitionSeeds.slice(0, 3).map(readiness)).toEqual([
-      'Needs Verification',
+      'Not Currently Ready',
       'Needs Verification',
       'Needs Verification',
     ]);
