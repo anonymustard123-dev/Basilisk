@@ -1,6 +1,6 @@
 # BASILISK
 
-An internal PJM behind-the-meter demand-response origination terminal with four pinned acquisition examples and a broader facility register. Original GSK, Swarthmore, Lineage and UNFI research leads remain intact. A research-priority score is never buyer qualification.
+The current homepage is a focused four-property acquisition shortlist with research dossiers and an interactive conditional underwriting worksheet. Supabase and the broader origination dashboard are deferred. Original research leads and backend workflow code remain available for later work. See [underwriting and immediate next steps](UNDERWRITING.md).
 
 ## Run
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:3000. Without Supabase, Basilisk serves four pinned acquisition examples plus the four original leads in **seed / read-only mode**. JSON/CSV/form imports can be validated and previewed; changes, jobs and confidential uploads require authenticated persistence. No pretend saves or generated live-search results. See [data onboarding](docs/DATA_ONBOARDING.md) for the shortest path to real imports.
+Open http://127.0.0.1:3000. The homepage uses the four curated acquisition records and needs no Supabase credentials. Worksheet inputs are temporary; they are not saved. Backend import, jobs, confidential uploads and the wider dashboard are outside the current UI. See [data onboarding](docs/DATA_ONBOARDING.md) for the deferred persistent workflow.
 
 ```powershell
 npm run lint

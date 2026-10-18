@@ -1530,3 +1530,342 @@ blockquote {
     font-size: 17px;
   }
 }
+
+/* Focused acquisition shortlist. Advanced origination tools remain deferred. */
+.candidate-workspace {
+  max-width: 1280px;
+  margin: auto;
+  padding: 0 48px 32px;
+}
+.quiet-header {
+  min-height: 94px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+  gap: 20px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.quiet-brand {
+  text-decoration: none;
+  color: var(--text);
+  letter-spacing: 0.2em;
+  font-weight: 700;
+}
+.quiet-brand span {
+  color: var(--faint);
+  font-size: 10px;
+  margin-left: 20px;
+}
+.quiet-intro {
+  padding: 65px 0 45px;
+}
+.quiet-intro .eyebrow {
+  font:
+    11px 'IBM Plex Mono',
+    monospace;
+  letter-spacing: 0.16em;
+  color: var(--accent);
+}
+.quiet-intro h1 {
+  font-size: clamp(36px, 5vw, 60px);
+  line-height: 1.08;
+  font-weight: 450;
+  letter-spacing: -0.05em;
+  margin: 20px 0;
+}
+.quiet-intro h1 span {
+  color: var(--muted);
+}
+.quiet-intro > p:last-child {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.6;
+}
+.quiet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.quiet-card {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  background: var(--surface);
+}
+.quiet-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.quiet-warning {
+  color: var(--amber);
+}
+.quiet-card h2 {
+  margin: 25px 0 7px;
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+.quiet-card h2 button {
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  border: 0;
+  padding: 0;
+  background: none;
+}
+.quiet-card h2 button:hover {
+  color: var(--accent);
+}
+.quiet-type {
+  color: var(--muted);
+  font-size: 12px;
+  margin: 0;
+  line-height: 1.5;
+}
+.quiet-price {
+  font-size: 27px;
+  letter-spacing: -0.03em;
+  margin: 26px 0 20px;
+}
+.quiet-price span {
+  display: block;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0;
+  margin-top: 5px;
+}
+.quiet-thesis {
+  color: var(--muted);
+  line-height: 1.65;
+  min-height: 70px;
+}
+.quiet-actions {
+  display: flex;
+  gap: 24px;
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  margin-top: 24px;
+}
+.quiet-actions button {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: 2px 0;
+  color: var(--text);
+  font-size: 13px;
+}
+.quiet-actions button span {
+  color: var(--accent);
+}
+.quiet-actions button:hover {
+  color: var(--accent);
+}
+.quiet-footer {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 30px;
+}
+.dossier-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 26px;
+}
+.dossier-tabs button {
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  padding: 8px 0 14px;
+}
+.dossier-tabs button[aria-selected='true'] {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+.dossier-content {
+  max-width: 840px;
+  line-height: 1.7;
+}
+.dossier-content h3 {
+  font-size: 16px;
+  margin: 30px 0 12px;
+}
+.dossier-content p,
+.dossier-content li {
+  color: var(--muted);
+}
+.dossier-content li {
+  margin-bottom: 10px;
+  padding-left: 4px;
+}
+.dossier-content .dossier-lead {
+  font-size: 19px;
+  color: var(--text);
+  line-height: 1.6;
+}
+.dossier-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  border-block: 1px solid var(--border);
+  padding: 22px 0;
+  margin: 26px 0;
+}
+.dossier-facts dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+.dossier-facts dd {
+  margin: 4px 0 0;
+}
+.dossier-callout,
+.offer-verdict {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 24px 0;
+}
+.dossier-callout p:last-child {
+  margin-bottom: 0;
+}
+.offer-verdict > span {
+  color: var(--amber);
+  font-size: 12px;
+}
+.offer-verdict h3 {
+  margin: 8px 0;
+  font-size: 22px;
+}
+.dossier-content details {
+  border-bottom: 1px solid var(--border);
+  padding: 16px 0;
+}
+.dossier-content summary {
+  cursor: pointer;
+}
+.dossier-content .dossier-small {
+  font-size: 12px;
+}
+.dossier-source {
+  display: inline-block;
+  margin: 15px 0;
+  color: var(--accent);
+}
+.scenario-mode {
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+}
+.scenario-mode select {
+  width: 100%;
+}
+.underwriting-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin: 22px 0;
+}
+.underwriting-inputs label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.underwriting-inputs input {
+  width: 100%;
+  min-width: 0;
+}
+.underwriting-checks {
+  display: grid;
+  gap: 15px;
+}
+.underwriting-checks label {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  color: var(--muted);
+  font-size: 13px;
+}
+.underwriting-checks input {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+}
+.scenario-table {
+  width: 100%;
+  font-size: 12px;
+  border-collapse: collapse;
+}
+.scenario-table th,
+.scenario-table td {
+  padding: 10px 6px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
+@media (max-width: 680px) {
+  .candidate-workspace {
+    padding: 0 20px 25px;
+  }
+  .quiet-header {
+    min-height: 75px;
+  }
+  .quiet-header > span,
+  .quiet-brand span {
+    display: none;
+  }
+  .quiet-intro {
+    padding: 35px 0 25px;
+  }
+  .quiet-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .quiet-card {
+    padding: 22px;
+  }
+  .quiet-card h2 {
+    font-size: 23px;
+  }
+  .quiet-thesis {
+    min-height: 0;
+  }
+  .dossier-facts,
+  .underwriting-inputs {
+    grid-template-columns: 1fr;
+  }
+}
+.quiet-intro {
+  padding: 34px 0 25px;
+}
+.quiet-intro h1 {
+  font-size: clamp(32px, 4vw, 46px);
+  margin: 15px 0;
+}
+.quiet-card {
+  padding: 24px;
+}
+.quiet-card h2 {
+  margin-top: 18px;
+}
+.quiet-price {
+  margin: 20px 0 16px;
+}
+.quiet-thesis {
+  min-height: 48px;
+  margin-bottom: 14px;
+}
+.quiet-actions {
+  margin-top: 18px;
+  padding-top: 15px;
+}

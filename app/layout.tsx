@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 export const metadata: Metadata = {
-  title: 'BASILISK · PJM Origination',
-  description: 'Evidence-first PJM behind-the-meter demand-response prospecting.',
+  title: 'BASILISK · Acquisition Shortlist',
+  description:
+    'Four acquisition candidates, property research and conditional demand-response underwriting.',
   robots: { index: false, follow: false },
 };
 export default function Layout({ children }: { children: React.ReactNode }) {
