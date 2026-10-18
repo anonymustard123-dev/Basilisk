@@ -2,14 +2,29 @@ import { facilitySchema, type Facility } from './model';
 import { mergeFacility, sameSite, siteKey } from './identity';
 import { checkDb, HttpError, type Context } from './server';
 export async function listFacilities(ctx: Context) {
-  const { data, error } = await ctx.db
-    .from('basilisk_facilities')
-    .select('payload')
-    .eq('tenant_id', ctx.tenant)
-    .order('updated_at', { ascending: false })
-    .limit(500);
-  checkDb(error);
-  return (data ?? []).map((row) => facilitySchema.parse(row.payload));
+  const [recent, pinned] = await Promise.all([
+    ctx.db
+      .from('basilisk_facilities')
+      .select('payload')
+      .eq('tenant_id', ctx.tenant)
+      .order('updated_at', { ascending: false })
+      .limit(500),
+    ctx.db
+      .from('basilisk_facilities')
+      .select('payload')
+      .eq('tenant_id', ctx.tenant)
+      .not('payload->acquisition->>featured_order', 'is', null),
+  ]);
+  checkDb(recent.error);
+  checkDb(pinned.error);
+  return [
+    ...new Map(
+      [...(pinned.data ?? []), ...(recent.data ?? [])].map((row) => {
+        const f = facilitySchema.parse(row.payload);
+        return [f.id, f] as const;
+      }),
+    ).values(),
+  ];
 }
 export async function getFacility(ctx: Context, id: string) {
   const { data, error } = await ctx.db
@@ -50,7 +65,17 @@ export async function importFacilities(ctx: Context, facilities: Facility[]) {
         .eq('tenant_id', ctx.tenant)
         .eq('site_key', identity);
       checkDb(error);
-      const existing = (data ?? []).find((row) =>
+      let candidates = data ?? [];
+      if (incoming.acquisition) {
+        const sourceMatch = await ctx.db
+          .from('basilisk_facilities')
+          .select('payload,version')
+          .eq('tenant_id', ctx.tenant)
+          .eq('payload->acquisition->>source_id', incoming.acquisition.source_id);
+        checkDb(sourceMatch.error);
+        candidates = [...candidates, ...(sourceMatch.data ?? [])];
+      }
+      const existing = candidates.find((row) =>
         sameSite(facilitySchema.parse(row.payload), incoming),
       );
       if (existing) {
@@ -67,19 +92,17 @@ export async function importFacilities(ctx: Context, facilities: Facility[]) {
           throw error;
         }
       } else {
-        if (data?.length)
+        if (candidates.length)
           throw new HttpError(
             409,
             'An existing site shares this address with a different operator. Confirm aliases / facility IDs before import.',
           );
-        const { error: insertError } = await ctx.db
-          .from('basilisk_facilities')
-          .insert({
-            id: incoming.id,
-            tenant_id: ctx.tenant,
-            site_key: identity,
-            payload: incoming,
-          });
+        const { error: insertError } = await ctx.db.from('basilisk_facilities').insert({
+          id: incoming.id,
+          tenant_id: ctx.tenant,
+          site_key: identity,
+          payload: incoming,
+        });
         if (insertError?.code === '23505' && attempt < 2) continue;
         checkDb(insertError);
         inserted++;

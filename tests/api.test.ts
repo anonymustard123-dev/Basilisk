@@ -36,10 +36,10 @@ describe('seed-mode API boundaries', () => {
       ),
     ).toThrow();
   });
-  it('serves exactly four truthful seeds and no signed-in user', async () => {
+  it('serves four acquisitions plus the four preserved leads and no signed-in user', async () => {
     const r = await facilities();
     expect(r.status).toBe(200);
-    expect((await r.json()).facilities).toHaveLength(4);
+    expect((await r.json()).facilities).toHaveLength(8);
     expect(await (await session()).json()).toEqual({ mode: 'seed', user: null });
   });
   it('validates researched imports without claiming persistence', async () => {

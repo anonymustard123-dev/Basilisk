@@ -19,6 +19,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "^0.5.10",
     "@eslint/eslintrc": "^3.3.1",
     "@types/node": "^22.15.3",
     "@types/react": "^19.1.0",

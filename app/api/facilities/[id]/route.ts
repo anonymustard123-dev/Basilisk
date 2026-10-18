@@ -15,6 +15,15 @@ export async function PATCH(request: Request, { params }: { params: Promise<{ id
     // Identity and all evidence changes go through dedicated review/import workflows.
     const f = validateDecisions({
       ...current,
+      acquisition:
+        current.acquisition && input.facility.acquisition
+          ? {
+              ...input.facility.acquisition,
+              source_id: current.acquisition.source_id,
+              listing_url: current.acquisition.listing_url,
+              featured_order: current.acquisition.featured_order,
+            }
+          : current.acquisition,
       pjm: input.facility.pjm,
       load: input.facility.load,
       dr: input.facility.dr,

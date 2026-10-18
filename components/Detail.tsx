@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { accepted, stages, type Facility } from '@/lib/model';
 import { assetLabel, capacityLabel, loadLabel, priority } from '@/lib/scoring';
 import { api, Badge, errorText, Field, Modal } from './shared';
+import { AcquisitionDetail } from './AcquisitionDetail';
+import { economicsBasis } from '@/lib/acquisitions';
 const checklist = [
   'Operator & account / meters',
   'Recent utility bill',
@@ -126,6 +128,13 @@ export function Detail({
           {f.origin} · last updated {new Date(f.updated_at).toLocaleDateString()}
         </span>
       </div>
+      {f.acquisition && (
+        <AcquisitionDetail
+          facility={f}
+          readOnly={readOnly}
+          change={(a) => setF({ ...f, acquisition: a })}
+        />
+      )}
       <div className="vector-grid">
         <div>
           <span>01 / IN PJM?</span>
@@ -722,7 +731,7 @@ export function Detail({
       </section>
       <details className="disclosure">
         <summary>Illustrative referral-fee scenario</summary>
-        <Economics mw={f.qualification.mw} />
+        <Economics facility={f} />
       </details>
       {error && (
         <p className="error sticky-error" role="alert">
@@ -732,24 +741,28 @@ export function Detail({
     </Modal>
   );
 }
-function Economics({ mw }: { mw: number | null }) {
-  const [capacity, setCapacity] = useState(mw === null ? '' : String(mw));
+function Economics({ facility }: { facility: Facility }) {
+  const basis = economicsBasis(facility);
   const [fee, setFee] = useState('10');
   const [term, setTerm] = useState('1');
+  if (!basis)
+    return (
+      <p className="fineprint">
+        No supported qualifying-MW assumption. Collect and review site/account evidence before
+        calculating a hypothetical referral fee. Vacant properties do not provide current qualified
+        demand.
+      </p>
+    );
+  const capacity = String(basis.mw);
   return (
     <div className="stack">
       <p className="fineprint">
-        Buyer quote — unverified contract terms; illustrative only. Manually enter buyer-approved /
-        cleared MW. No assumed ten-year fee stream or customer payout.
+        Buyer quote — unverified contract terms; illustrative referral fee only. No assumed ten-year
+        fee stream or customer payout. Basis: {basis.label}.
       </p>
       <div className="form-grid">
-        <Field label="Buyer-approved MW">
-          <input
-            type="number"
-            min="0"
-            value={capacity}
-            onChange={(e) => setCapacity(e.target.value)}
-          />
+        <Field label="Supported qualifying-MW basis">
+          <input type="number" min="0" value={capacity} readOnly />
         </Field>
         <Field label="Illustrative $ / MW / day">
           <input type="number" min="0" value={fee} onChange={(e) => setFee(e.target.value)} />

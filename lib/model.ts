@@ -85,6 +85,27 @@ export const assetSchema = z.object({
   constraints: text,
   evidence_ids: z.array(z.string()).max(30),
 });
+export const acquisitionSchema = z.object({
+  source_id: z.string().min(1).max(200),
+  listing_url: publicUrl,
+  featured_order: z.number().int().min(1).max(4).nullable().default(null),
+  asking_price_usd: z.number().nonnegative().nullable(),
+  price_status: z.enum(['listed', 'disputed', 'last-reported', 'unverified']),
+  alternate_price_usd: z.number().nonnegative().nullable().default(null),
+  building_sqft: z.number().positive().nullable(),
+  area_status: z.enum(['reported', 'approximate', 'disputed']),
+  property_type: z.string().max(250),
+  occupancy: z.enum(['occupied', 'vacant', 'former-use', 'unknown']),
+  availability: z.enum(['advertised', 'unverified', 'off-market', 'sold']),
+  checked_at: z.string().datetime().nullable(),
+  verification_notes: text,
+  qualifying_mw: z.number().nonnegative().nullable().default(null),
+  qualifying_assumption: text.default(''),
+  qualifying_evidence_ids: z.array(z.string()).max(30).default([]),
+  reduction: z.enum(['confirmed', 'possible', 'unknown', 'no']).default('unknown'),
+  reduction_evidence_ids: z.array(z.string()).max(30).default([]),
+});
+export type Acquisition = z.infer<typeof acquisitionSchema>;
 export const facilitySchema = z.object({
   id: z.string().min(1).max(100),
   name: z.string().min(1).max(250),
@@ -97,6 +118,7 @@ export const facilitySchema = z.object({
   identifiers: z.record(z.string().max(200)).default({}),
   origin: z.enum(['Independent research', 'Automated discovery', 'AI research']),
   researched: z.boolean().default(false),
+  acquisition: acquisitionSchema.nullable().default(null),
   pjm: z.object({
     status: z.enum(['verified', 'likely', 'unknown', 'no']),
     utility: z.string().max(150).nullable(),
@@ -169,6 +191,7 @@ export const blankFacility = (
   identifiers: {},
   origin: 'Independent research',
   researched: false,
+  acquisition: null,
   pjm: { status: 'unknown', utility: null, zone: null, evidence_ids: [] },
   load: { verified_mw: null, estimated_min_mw: null, estimated_max_mw: null, evidence_ids: [] },
   dr: {
@@ -204,6 +227,26 @@ export function accepted(f: Facility, ids: string[], category?: Evidence['catego
 export function validateDecisions(f: Facility) {
   const has = (ids: string[], category: Evidence['category']) =>
     accepted(f, ids, category).length > 0;
+  if (f.acquisition?.qualifying_mw !== null && f.acquisition?.qualifying_mw !== undefined) {
+    if (
+      !f.acquisition.qualifying_assumption.trim() ||
+      !f.evidence.some(
+        (e) =>
+          f.acquisition!.qualifying_evidence_ids.includes(e.id) &&
+          e.category === 'qualification' &&
+          ['verified', 'estimated'].includes(e.status) &&
+          !e.conflict,
+      )
+    )
+      throw new Error(
+        'Estimated qualifying MW needs an explicit assumption and reviewed qualification evidence.',
+      );
+  }
+  if (
+    f.acquisition?.reduction === 'confirmed' &&
+    !has(f.acquisition.reduction_evidence_ids, 'flexibility')
+  )
+    throw new Error('Confirmed reduction needs reviewed flexibility evidence.');
   if (
     ['verified', 'no'].includes(f.pjm.status) &&
     (!has(f.pjm.evidence_ids, 'pjm') || !f.pjm.utility || !f.pjm.zone)
@@ -241,6 +284,10 @@ export function validateDecisions(f: Facility) {
       'DR history needs dated, account-scoped buyer/customer confirmation and program scope.',
     );
   if (f.qualification.mw !== null || f.stage === 'Qualified / under agreement') {
+    if (f.acquisition?.occupancy === 'vacant')
+      throw new Error(
+        'A vacant property cannot be treated as currently qualified; confirm active load and occupancy first.',
+      );
     if (
       f.qualification.mw === null ||
       !f.qualification.buyer ||

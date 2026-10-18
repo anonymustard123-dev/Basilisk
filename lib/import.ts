@@ -1,5 +1,12 @@
 import { z } from 'zod';
-import { blankFacility, facilitySchema, publicUrl, type Facility } from './model';
+import {
+  acquisitionSchema,
+  blankFacility,
+  facilitySchema,
+  publicUrl,
+  type Facility,
+} from './model';
+import { availabilityLabel, qualifyingMwLabel } from './acquisitions';
 export const importSchema = z.object({
   version: z.literal(1),
   facilities: z.array(facilitySchema).min(1).max(100),
@@ -63,6 +70,22 @@ export function parseImport(input: string, format: 'json' | 'csv'): Facility[] {
       const r = Object.fromEntries(headers.map((h, i) => [h, row[i] ?? '']));
       const f = blankFacility(r.name, r.address, r.city, r.state.toUpperCase(), r.postal_code);
       f.researched = true;
+      if (r.listing_url) {
+        f.acquisition = acquisitionSchema.parse({
+          source_id: r.listing_id || r.listing_url,
+          listing_url: r.listing_url,
+          asking_price_usd: r.asking_price_usd ? Number(r.asking_price_usd) : null,
+          price_status: 'unverified',
+          building_sqft: r.building_sqft ? Number(r.building_sqft) : null,
+          area_status: 'reported',
+          property_type: r.property_type || 'Industrial',
+          occupancy: r.occupancy || 'unknown',
+          availability: 'unverified',
+          checked_at: null,
+          verification_notes: 'Imported listing details need human source and broker verification.',
+        });
+        f.identifiers.listing = f.acquisition.source_id;
+      }
       f.evidence = [
         {
           id: crypto.randomUUID(),
@@ -101,6 +124,20 @@ export function parseImport(input: string, format: 'json' | 'csv'): Facility[] {
         stage: 'Research lead',
         notes: '',
         checklist: [],
+        acquisition: f.acquisition
+          ? {
+              ...f.acquisition,
+              featured_order: null,
+              availability: 'unverified',
+              price_status: 'unverified',
+              checked_at: null,
+              qualifying_mw: null,
+              qualifying_assumption: '',
+              qualifying_evidence_ids: [],
+              reduction: f.acquisition.reduction === 'no' ? 'no' : 'unknown',
+              reduction_evidence_ids: [],
+            }
+          : null,
         pjm: { status: 'unknown', utility: f.pjm.utility, zone: f.pjm.zone, evidence_ids: [] },
         load: {
           verified_mw: null,
@@ -137,6 +174,12 @@ export function exportCsv(rows: Facility[]) {
       'Buyer-qualified MW',
       'Next action',
       'Sources',
+      'Asking price USD',
+      'Price status',
+      'Building SF',
+      'Availability',
+      'Estimated qualifying MW',
+      'Listing URL',
     ],
     ...rows.map((f) => [
       f.name,
@@ -148,6 +191,12 @@ export function exportCsv(rows: Facility[]) {
       f.qualification.mw ?? 'Unknown',
       f.next_action,
       f.evidence.map((e) => e.source_url).join(' | '),
+      f.acquisition?.asking_price_usd ?? 'Unknown',
+      f.acquisition?.price_status ?? '',
+      f.acquisition?.building_sqft ?? 'Unknown',
+      f.acquisition ? availabilityLabel(f) : '',
+      qualifyingMwLabel(f),
+      f.acquisition?.listing_url ?? '',
     ]),
   ]
     .map((r) => r.map(csvCell).join(','))

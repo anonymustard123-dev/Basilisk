@@ -7,6 +7,8 @@ import { api, Badge, errorText, Field, Modal } from './shared';
 import { Detail } from './Detail';
 import { ImportLead } from './ImportLead';
 import type { Job } from '@/lib/jobs';
+import { AcquisitionCard } from './AcquisitionCard';
+import { featuredAcquisitions, matchesAcquisitionFilters } from '@/lib/acquisitions';
 
 type Capabilities = { database: boolean; openai: boolean; dataforseo: boolean };
 type Panel = 'import' | 'find' | 'sources' | 'login' | null;
@@ -37,6 +39,11 @@ export default function Dashboard({
   const [stage, setStage] = useState('');
   const [flex, setFlex] = useState('');
   const [min, setMin] = useState('');
+  const [maxPrice, setMaxPrice] = useState('1500000');
+  const [includeUnknownMw, setIncludeUnknownMw] = useState(true);
+  const [includeUnknownPrice, setIncludeUnknownPrice] = useState(true);
+  const [pjmFilter, setPjmFilter] = useState<'potential' | 'verified'>('potential');
+  const [reduction, setReduction] = useState('');
   const [filters, setFilters] = useState(false);
   const [sort, setSort] = useState('priority');
   const [ascending, setAscending] = useState(false);
@@ -76,31 +83,25 @@ export default function Dashboard({
       setBusy('');
     }
   };
-  const top = useMemo(
-    () =>
-      facilities
-        .filter(
-          (f) =>
-            f.researched &&
-            !priority(f).excluded &&
-            !['Disqualified', 'Deprioritized'].includes(f.stage),
-        )
-        .sort((a, b) => priority(b).score - priority(a).score)
-        .slice(0, 4),
-    [facilities],
-  );
+  const top = useMemo(() => featuredAcquisitions(facilities), [facilities]);
   const rows = useMemo(() => {
     const result = facilities.filter(
       (f) =>
-        !priority(f).excluded &&
+        matchesAcquisitionFilters(f, {
+          maxPrice,
+          includeUnknownPrice,
+          minMw: min,
+          includeUnknownMw,
+          pjm: pjmFilter,
+          reduction,
+        }) &&
         `${f.name} ${f.address} ${f.city} ${f.operator}`
           .toLowerCase()
           .includes(query.toLowerCase()) &&
         (!region || f.state === region || f.pjm.utility === region) &&
         (!dr || f.dr.status === dr) &&
         (!stage || f.stage === stage) &&
-        (!flex || f.assets.some((a) => a.type === flex)) &&
-        (!min || Number(f.load.verified_mw ?? f.load.estimated_min_mw ?? -1) >= Number(min)),
+        (!flex || f.assets.some((a) => a.type === flex)),
     );
     return result.sort((a, b) => {
       const value = (f: Facility) =>
@@ -123,7 +124,22 @@ export default function Dashboard({
           : String(av).localeCompare(String(bv))) * (ascending ? 1 : -1)
       );
     });
-  }, [facilities, query, region, dr, stage, flex, min, sort, ascending]);
+  }, [
+    facilities,
+    query,
+    region,
+    dr,
+    stage,
+    flex,
+    min,
+    sort,
+    ascending,
+    maxPrice,
+    includeUnknownPrice,
+    includeUnknownMw,
+    pjmFilter,
+    reduction,
+  ]);
   const sortBy = (key: string) => {
     if (sort === key) setAscending(!ascending);
     else {
@@ -244,7 +260,7 @@ export default function Dashboard({
             <div className="mode-note">
               <span className="status-dot amber" />
               <span>
-                Four sourced research candidates. Connect Supabase to save imports, review evidence
+                Four pinned acquisition examples. Connect Supabase to save imports, review evidence
                 and track outreach.
               </span>
               <span className="mode-tag">NO LIVE FEEDS RUNNING</span>
@@ -261,42 +277,18 @@ export default function Dashboard({
           ) : (
             <>
               <div className="section-label">
-                <h2>Top 4 prospects</h2>
-                <span>RESEARCH PRIORITY · BUYER CONFIRMATION REQUIRED</span>
+                <h2>Top 4 Acquisition Opportunities</h2>
+                <span>PINNED EXAMPLES · AVAILABILITY & DR REQUIRE DILIGENCE</span>
               </div>
-              <section className="top-grid" aria-label="Top researched prospects">
-                {top.map((f, i) => (
-                  <button className="prospect-card" key={f.id} onClick={() => setSelected(f)}>
-                    <div className="card-top">
-                      <span className="card-index">0{i + 1}</span>
-                      <Badge tone="amber">{f.stage}</Badge>
-                      <span className="card-arrow">↗</span>
-                    </div>
-                    <div className="card-name">{f.name}</div>
-                    <div className="card-location">
-                      {f.city}, {f.state}
-                    </div>
-                    <p>{f.why}</p>
-                    <div className="card-bottom">
-                      <span className="asset-indicator" />{' '}
-                      <span>
-                        {f.assets[0]?.electrical_kw !== null &&
-                        f.assets[0]?.electrical_kw !== undefined
-                          ? `${f.assets[0].electrical_kw / 1000} MW documented nameplate`
-                          : 'Electrical MW unknown'}
-                      </span>
-                      <strong>
-                        {priority(f).score}
-                        <small> / 100</small>
-                      </strong>
-                    </div>
-                  </button>
+              <section className="top-grid" aria-label="Top 4 Acquisition Opportunities">
+                {top.map((f) => (
+                  <AcquisitionCard key={f.id} facility={f} open={() => setSelected(f)} />
                 ))}
               </section>
               {!top.length && (
                 <div className="empty">
                   {loaded
-                    ? 'No researched leads yet. Run the seed command or import researched leads.'
+                    ? 'Run the acquisition migration and seed command to add the four pinned examples.'
                     : 'Loading workspace…'}
                 </div>
               )}
@@ -377,6 +369,47 @@ export default function Dashboard({
                         onChange={(e) => setMin(e.target.value)}
                       />
                     </Field>
+                    <Field label="Maximum asking price USD">
+                      <input
+                        type="number"
+                        min="0"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                      />
+                    </Field>
+                    <Field label="PJM territory · required">
+                      <select
+                        value={pjmFilter}
+                        onChange={(e) => setPjmFilter(e.target.value as 'potential' | 'verified')}
+                      >
+                        <option value="potential">Include unverified for research</option>
+                        <option value="verified">Verified accounts only</option>
+                      </select>
+                    </Field>
+                    <Field label="Ability to reduce grid load">
+                      <select value={reduction} onChange={(e) => setReduction(e.target.value)}>
+                        <option value="">Any / include unknown</option>
+                        {['confirmed', 'possible', 'unknown', 'no'].map((v) => (
+                          <option key={v}>{v}</option>
+                        ))}
+                      </select>
+                    </Field>
+                    <label className="authorization">
+                      <input
+                        type="checkbox"
+                        checked={includeUnknownMw}
+                        onChange={(e) => setIncludeUnknownMw(e.target.checked)}
+                      />
+                      Include unknown MW
+                    </label>
+                    <label className="authorization">
+                      <input
+                        type="checkbox"
+                        checked={includeUnknownPrice}
+                        onChange={(e) => setIncludeUnknownPrice(e.target.checked)}
+                      />
+                      Include unknown prices
+                    </label>
                     <Field label="Flexibility">
                       <select value={flex} onChange={(e) => setFlex(e.target.value)}>
                         <option value="">Any method</option>
@@ -394,7 +427,9 @@ export default function Dashboard({
                           'prior participation',
                           'currently enrolled',
                         ].map((v) => (
-                          <option key={v}>{v}</option>
+                          <option key={v} value={v}>
+                            {v === 'prior participation' ? 'Previously enrolled' : v}
+                          </option>
                         ))}
                       </select>
                     </Field>
@@ -414,6 +449,11 @@ export default function Dashboard({
                         setFlex('');
                         setDr('');
                         setStage('');
+                        setMaxPrice('1500000');
+                        setIncludeUnknownMw(true);
+                        setIncludeUnknownPrice(true);
+                        setPjmFilter('potential');
+                        setReduction('');
                       }}
                     >
                       Clear
@@ -588,6 +628,14 @@ export default function Dashboard({
         <Modal title="Sources & batch jobs" close={() => setPanel(null)} wide>
           <div className="source-grid">
             <div>
+              <Badge>Manual import</Badge>
+              <h3>Property listings</h3>
+              <p>
+                Add broker / licensed listing research with JSON, CSV or the lead form. EPA and
+                business directories do not supply current asking prices or sale availability.
+              </p>
+            </div>
+            <div>
               <Badge tone={caps.database ? 'green' : 'amber'}>
                 {caps.database ? 'Configured' : 'Not connected'}
               </Badge>
@@ -629,7 +677,8 @@ export default function Dashboard({
           </div>
           {jobs.length === 0 ? (
             <div className="empty">
-              No live jobs have run. The four seed records were independently sourced.
+              No live jobs have run. Featured listings and the original DR leads were independently
+              researched.
             </div>
           ) : (
             jobs.map((job) => (

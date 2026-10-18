@@ -1,15 +1,25 @@
-import { reconcileDecisions, type Facility } from './model';
+import { reconcileDecisions, type Facility } from './model.ts';
 const normalize = (v: string) =>
   v
     .toLowerCase()
     .replace(/\broad\b/g, 'rd')
     .replace(/\bstreet\b/g, 'st')
     .replace(/\bavenue\b/g, 'ave')
+    .replace(/\bboulevard\b/g, 'blvd')
     .replace(/\b(south|north|east|west)\b/g, (m) => m[0])
     .replace(/[^a-z0-9]/g, '');
 export const siteKey = (f: Pick<Facility, 'address' | 'city' | 'state' | 'postal_code'>) =>
   [normalize(f.address), normalize(f.city), f.state, f.postal_code.slice(0, 5)].join('|');
 export function sameSite(a: Facility, b: Facility) {
+  if (
+    a.acquisition &&
+    b.acquisition &&
+    a.acquisition.source_id === b.acquisition.source_id &&
+    normalize(a.address) === normalize(b.address) &&
+    normalize(a.city) === normalize(b.city) &&
+    a.state === b.state
+  )
+    return true;
   if (siteKey(a) !== siteKey(b)) return false;
   const names = [a.name, a.operator, ...a.aliases].map(normalize);
   return (
@@ -52,6 +62,19 @@ export function mergeFacility(current: Facility, incoming: Facility): Facility {
   const firstResearch = incoming.researched && !current.researched;
   return reconcileDecisions({
     ...current,
+    acquisition:
+      current.acquisition ??
+      (incoming.acquisition
+        ? {
+            ...incoming.acquisition,
+            qualifying_evidence_ids: incoming.acquisition.qualifying_evidence_ids.map(
+              (id) => idMap.get(id) ?? id,
+            ),
+            reduction_evidence_ids: incoming.acquisition.reduction_evidence_ids.map(
+              (id) => idMap.get(id) ?? id,
+            ),
+          }
+        : null),
     ...(firstResearch
       ? {
           why: incoming.why,

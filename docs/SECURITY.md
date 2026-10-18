@@ -1,6 +1,6 @@
 # Internal-workspace boundaries
 
-Public seed mode contains only the four public candidates. All writes return an explicit unavailable response until Supabase is configured. A configured installation requires an allowlisted Auth user and exactly one tenant membership. Live records are never embedded in the unauthenticated HTML page.
+Public seed mode contains the four public acquisition examples and the four original public candidates. All writes return an explicit unavailable response until Supabase is configured. A configured installation requires an allowlisted Auth user and exactly one tenant membership. Live records are never embedded in the unauthenticated HTML page.
 
 All mutations require a same-origin Origin header. Session access tokens live in HttpOnly SameSite=Strict cookies, Secure in production, and expire with the Supabase session. No refresh token is exposed. Supabase Auth supplies password-attempt rate limiting. Use strong user passwords and keep the approved-email list narrow.
 

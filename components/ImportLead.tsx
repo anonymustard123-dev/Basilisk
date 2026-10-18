@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { blankFacility, type Facility } from '@/lib/model';
+import { acquisitionSchema, blankFacility, type Facility } from '@/lib/model';
 import { api, Badge, errorText, Field } from './shared';
 export function ImportLead({ readOnly, done }: { readOnly: boolean; done: () => Promise<void> }) {
   const [tab, setTab] = useState<'file' | 'form'>('file');
@@ -126,6 +126,29 @@ export function ImportLead({ readOnly, done }: { readOnly: boolean; done: () => 
               value('state').toUpperCase(),
               value('postal'),
             );
+            if (value('listing_url')) {
+              const parsed = acquisitionSchema.safeParse({
+                source_id: value('listing_id') || value('listing_url'),
+                listing_url: value('listing_url'),
+                asking_price_usd: value('asking_price_usd')
+                  ? Number(value('asking_price_usd'))
+                  : null,
+                price_status: 'unverified',
+                building_sqft: value('building_sqft') ? Number(value('building_sqft')) : null,
+                area_status: 'reported',
+                property_type: 'Industrial',
+                occupancy: value('occupancy') || 'unknown',
+                availability: 'unverified',
+                checked_at: null,
+                verification_notes:
+                  'Manual acquisition entry; review the cited listing and current price/availability.',
+              });
+              if (!parsed.success) {
+                setError(parsed.error.issues[0].message);
+                return;
+              }
+              f.acquisition = parsed.data;
+            }
             f.why = value('why');
             f.missing = value('missing');
             f.next_action = value('next');
@@ -205,6 +228,31 @@ export function ImportLead({ readOnly, done }: { readOnly: boolean; done: () => 
           <Field label="Next action">
             <input name="next" required />
           </Field>
+          <details className="disclosure">
+            <summary>Optional acquisition / property listing</summary>
+            <div className="form-grid">
+              <Field label="Original listing URL">
+                <input name="listing_url" type="url" />
+              </Field>
+              <Field label="Listing source ID">
+                <input name="listing_id" placeholder="crexi:123456" />
+              </Field>
+              <Field label="Reported asking price USD">
+                <input name="asking_price_usd" type="number" min="0" />
+              </Field>
+              <Field label="Building square feet">
+                <input name="building_sqft" type="number" min="1" />
+              </Field>
+              <Field label="Occupancy">
+                <select name="occupancy">
+                  <option value="unknown">Unknown</option>
+                  <option value="occupied">Occupied</option>
+                  <option value="vacant">Vacant</option>
+                  <option value="former-use">Former use</option>
+                </select>
+              </Field>
+            </div>
+          </details>
           <button className="primary" disabled={busy}>
             {busy ? 'Validating…' : 'Validate & preview →'}
           </button>
