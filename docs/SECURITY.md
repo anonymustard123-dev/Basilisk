@@ -1,0 +1,13 @@
+# Internal-workspace boundaries
+
+Public seed mode contains only the four public candidates. All writes return an explicit unavailable response until Supabase is configured. A configured installation requires an allowlisted Auth user and exactly one tenant membership. Live records are never embedded in the unauthenticated HTML page.
+
+All mutations require a same-origin Origin header. Session access tokens live in HttpOnly SameSite=Strict cookies, Secure in production, and expire with the Supabase session. No refresh token is exposed. Supabase Auth supplies password-attempt rate limiting. Use strong user passwords and keep the approved-email list narrow.
+
+User database access uses the publishable key plus authenticated bearer token and RLS membership policies. Tenant IDs are derived server-side; API input cannot select another tenant. Secret-key access is restricted to seeding, sign-in and the CRON_SECRET-protected runner. Provisioning membership is an administrator SQL action. GridSwitch data is never queried by Basilisk.
+
+Confidential uploads require an explicit authorization checkbox, same-origin session, matching facility/tenant and a 4 MB server-enforced stream limit. MIME signatures are checked for PDF/PNG/JPEG; CSV is text-checked and downloaded as an attachment. Storage is private and tenant-path-protected. Downloads recheck tenant access and issue signed links valid for 60 seconds. Audit rows preserve actor/time/action; evidence retains author/source/review provenance. Do not distribute signed links outside the workspace. The app does not parse confidential file contents or send them to AI. A malware scanner and organization-specific retention policy are not included in this MVP.
+
+Imported fields are length-bounded and schema-validated. React escapes content; there is no raw HTML rendering. Exported CSV cells are formula-neutralized. Imported URLs require HTTPS public-host syntax and are rendered as links; the server never fetches arbitrary research URLs. Provider network requests use fixed HTTPS hosts and validated state/page inputs. AI claims are checked against actual returned search citations and always start suggested. External source pages and AI results are untrusted.
+
+Before customer use, test two tenant accounts against each other's facility/document URLs, sign-in expiration, private object access without authorization, migration RLS and configured vendor budgets. These require real Supabase credentials and cannot be verified in seed mode. Database tenant members are trusted internal collaborators: direct authenticated database access can edit their workspace records under RLS; the UI/server's qualification checks are not a substitute for independent buyer diligence.
