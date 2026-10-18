@@ -1,6 +1,6 @@
 # BASILISK
 
-The current homepage is a focused four-property acquisition shortlist with research dossiers and an prefilled underwriting worksheet with indicative offers. Supabase and the broader origination dashboard are deferred. Original research leads and backend workflow code remain available for later work. See [underwriting and immediate next steps](UNDERWRITING.md).
+The current homepage is a focused four-property acquisition shortlist with research dossiers and a prefilled underwriting worksheet with indicative offers, demand-response earnings and DR Yield comparisons. Supabase and the broader origination dashboard are deferred. Original research leads and backend workflow code remain available for later work. See [underwriting and immediate next steps](UNDERWRITING.md).
 
 ## Run
 
@@ -11,7 +11,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:3000. The homepage uses the four curated acquisition records and needs no Supabase credentials. Worksheet inputs are temporary; they are not saved. Backend import, jobs, confidential uploads and the wider dashboard are outside the current UI. See [data onboarding](docs/DATA_ONBOARDING.md) for the deferred persistent workflow.
+Open http://127.0.0.1:3000. The homepage uses four MW-first acquisition records and needs no Supabase credentials. Worksheet inputs are temporary; they are not saved. Backend import, jobs, confidential uploads and the wider dashboard are outside the current UI. See [data onboarding](docs/DATA_ONBOARDING.md) for the deferred persistent workflow.
 
 ```powershell
 npm run lint
@@ -65,4 +65,5 @@ Start with the pinned acquisitions → open a property → inspect listing statu
 Before buyer submission, use the expandable checklist to collect the authorized bill, tags, interval profile, generator details, air permits and scoped DR history. Documents are private (4 MB per upload), with tenant authorization and 60-second signed download links. They are never part of the public seed bundle or AI prompt.
 
 See `docs/RESEARCH_HANDOFF.md`, `docs/SCORING.md`, `docs/SECURITY.md` and `docs/VALIDATION.md`.
+
 

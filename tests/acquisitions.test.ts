@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { acquisitionSeeds } from '@/lib/featured-acquisitions';
+import { previousAcquisitionSeeds as acquisitionSeeds } from '@/lib/featured-acquisitions';
 import { initialFacilities } from '@/lib/initial-facilities';
 import { seeds } from '@/lib/seeds';
 import { blankFacility, facilitySchema, validateDecisions } from '@/lib/model';
@@ -25,7 +25,9 @@ describe('pinned acquisition records', () => {
   it('validates four actual records in requested order while preserving four original prospects', () => {
     expect(initialFacilities).toHaveLength(8);
     expect(seeds).toHaveLength(4);
-    expect(featuredAcquisitions([...initialFacilities].reverse()).map((f) => f.address)).toEqual([
+    expect(
+      featuredAcquisitions([...acquisitionSeeds, ...seeds].reverse()).map((f) => f.address),
+    ).toEqual([
       '1893 East 55th Street',
       '320 Phillips Avenue',
       '108 MacDade Boulevard',

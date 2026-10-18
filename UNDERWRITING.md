@@ -1,27 +1,31 @@
-# Shortlist underwriting
+# DR Yield and demand earnings
 
-Current shortlist: 1893 East 55th Street, 320 Phillips Avenue, 108 MacDade Boulevard and 4307 US Route 40 East. Wooster and Porter have been replaced. Park Avenue was excluded after the direct Crexi page showed Off-Market / Historical Flyer despite older search results advertising a sale. Legacy seed records and the historical SQL migration remain preserved; Supabase is deferred and the current UI uses the new shortlist.
+DR Yield = annual net demand-response income / independent purchase-price assumption.
+Contract coverage = total undiscounted contract net DR / purchase price.
+PV coverage = discounted net DR / purchase price.
+Yield on cost = annual net DR / (purchase + closing costs + works + reserve).
 
-Every property now displays an indicative offer and editable, property-specific defaults. All figures are assumption-based. There are no evidence checkboxes or blocking introductory notices. A short label stays beside each figure and detailed provenance is collapsed under Basis & calculation.
+All are incremental DR metrics, not property cap rates, equity IRRs, probability estimates, or total property returns. The price denominator is editable and independent of the calculated offer, avoiding circular valuations. Zero purchase price displays no ratio. Negative net earnings remain negative.
 
-| Property  | Property value proxy | Repairs/upgrades | Holding reserve | Reduction / account cap |        Rate | Annual DR costs |
-| --------- | -------------------: | ---------------: | --------------: | ----------------------: | ----------: | --------------: |
-| East 55th |           $1,079,100 |         $100,000 |         $60,000 |          0.15 / 0.30 MW | $100/MW-day |          $3,000 |
-| Phillips  |             $900,000 |          $75,000 |         $50,000 |          0.50 / 1.00 MW | $200/MW-day |         $12,000 |
-| MacDade   |             $697,500 |          $75,000 |         $40,000 |         0.075 / 0.15 MW | $100/MW-day |          $2,500 |
-| Lewisburg |           $2,910,150 |         $200,000 |        $150,000 |          1.00 / 1.50 MW | $200/MW-day |         $25,000 |
+The underwriting tab now includes full gross customer capacity revenue, receipts after realization, our income share, annual costs, monthly annual-average net, contract net before setup, contract net after works/reserve, discounted value, annual/cumulative cash flows and 0/50/80/100% receipt sensitivities. Gross referral fee at $10/MW-day is a separate annual alternative, never added to customer receipts or assumed to run ten years. No event-energy revenue or terminal DR value. No property rent, appreciation, financing or taxes included.
 
-Property value is 90% of the advertised asking price as a negotiation proxy, not market-value evidence or an appraisal. Repairs and reserves are screening budgets, not quotes. MW/account caps are hypothetical operating scenarios, not inferred verified capacity from floor area. East 55th is reported vacant and the first three cases fall below the call's stated 1 MW minimum, so their offers exclude DR value. Lewisburg models a post-diligence eligible operating case; its rate assumes Tier 2 diesel suitability and income rights, neither confirmed.
+| Property  |              Purchase assumption | DR MW / tag assumption | Rate / MW-day |      Works |  Reserve | Annual costs |
+| --------- | -------------------------------: | ---------------------: | ------------: | ---------: | -------: | -----------: |
+| Ravenna   | $6,000,000 (no asking disclosed) |                  5 / 7 |          $100 |   $500,000 | $300,000 |      $40,000 |
+| Butler    |                       $5,525,000 |                2.5 / 4 |          $100 |   $350,000 | $250,000 |      $20,000 |
+| Montana   |                       $4,675,000 |              1.5 / 1.8 |          $200 |   $200,000 | $200,000 |      $20,000 |
+| Sandstone |                       $9,350,000 | 4 / 8 after activation |          $100 | $2,000,000 | $500,000 |      $30,000 |
 
-Common defaults: 3% purchase costs, 80% retained income share, 80% receipt realization, 10 income years, first annual payment in year 3 and 15% unlevered discount. $100 refrigeration rate is an analyst sensitivity with no quote. $200 Tier 2 diesel rate and 10-year customer term originate in the supplied undated call, not a signed offer. No referral/event-energy income or terminal DR value is added. Call timing conflicts between 2028 and 2029; actual eligibility, payment date, rights, equipment and permits require confirmation. Default assumptions do not change qualification/evidence fields.
+Default purchase = 85% of disclosed asking; Ravenna $6M is a working sensitivity, not a quote/comparable. Standalone property value proxy = 90% of disclosed asking or $6.3M for Ravenna. These are negotiation assumptions, not independent appraisals. Common model: 3% purchase costs, 80% retained customer receipts, 80% receipt realization, 10 income years, first annual payment in year 3, 15% unlevered discount. Assumptions are editable and resettable; no Supabase needed.
 
-Annual net = min(reduction, account cap) × rate × 365 × share × receipt realization − annual costs. Discount annual payments at first-payment year through the contract term. Offer = (property value + included DR PV − repairs − reserve) / (1 + purchase cost percentage), floored at zero. Display rounds down to $5,000. No DR premium for vacant or sub-minimum cases; negative included DR PV is not discarded. Before tax/debt. Do not count DR in standalone property value as well as incremental PV.
+MW/tag inputs are hypothetical operating-load scenarios below advertised infrastructure, never actual account measurements. $100 load-drop rate is an analyst sensitivity: the undated call supplied no load-drop quote. Montana's $200 rate assumes Tier 2 diesel suitability and valid dispatch rights; equipment tier and permitted use remain unknown. No generator equipment is established at Ravenna/Butler/Sandstone and no diesel price is applied to them. Their curtailment needs active process loads and tenant/operator consent. Costs require quotes, production-interruption/spoilage/insurance budgets and operating plans. Sandstone fitout is a generic $2M screening allowance, not a full specialized manufacturing/data-center development budget. Current vacancy excludes its DR from the offer ceiling, while earnings remain an explicitly labeled after-activation scenario. No operating income is verified at any candidate.
 
-Inputs are temporary, retained across Research/Underwriting tabs while a property panel remains open. Close/reopen resets defaults. No Supabase required. Vercel can deploy GitHub main. For actual bids: broker-confirmed sale/price, independent valuation, leases/consent, utility interval data/tags/history, equipment/permit review, written partner pricing/eligibility and cost quotes. Database onboarding remains deferred; see docs/DATA_ONBOARDING.md.
+Annual gross = min(reduction MW, account cap MW) × rate × 365.
+Receipts = annual gross × receipt realization.
+Our annual net = receipts × our share − annual costs.
+Contract net = annual net × income years; net after setup subtracts works and reserve once.
+Discount each annual payment at first-payment year plus payment index. Annual costs begin with modeled operating payments; pre-operation carrying costs sit in reserve. First payment year/term are scenario assumptions: the call conflicts on 2028/2029 timing, and no written rate/rights/tenor is available.
 
-Sources checked October 18, 2026:
+Offer = (standalone property value + included DR present value − works − reserve) / (1 + purchase costs). Vacancy or sub-1 MW excludes DR premium in the current offer. Offers floor at zero and display rounded down to $5,000; ratios use the independent purchase assumption, not rounded offer. Do not count DR income in property value and incremental DR PV simultaneously.
 
-- https://crescorealestate.com/properties/1893-e-55th-street/
-- https://www.crexi.com/properties/1890268/ohio-1893-e-55th-street
-- https://rimarketplace.com/listing/71192/industrial/lewisburg/oh
-- Excluded: https://www.crexi.com/properties/2366284/ohio-6000-park-ave-cleveland-oh-44105
+No fixed asking-price filter remains in the shortlist UI. Default research order considers existing power evidence and operating blockers. Optional sorting compares modeled DR Yield; Ravenna's undisclosed asking and Sandstone's future activation are explicitly labeled so they do not masquerade as realized yields. Next work: written current broker quote and sale status, independent valuation, interval demand/capacity tags, prior DR enrollment, tenant rights/curtailment plan, equipment permits and partner approval. See docs/ACQUISITION_RESEARCH.md for sources and docs/DATA_ONBOARDING.md for deferred persistence.

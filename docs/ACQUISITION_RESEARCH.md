@@ -1,20 +1,21 @@
-# Featured acquisition observations — October 18, 2026
+# MW-first research — October 18, 2026
 
-| Property                              | Advertised price / size                           | Key diligence                                                                                              |
-| ------------------------------------- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
-| 1893 East 55th Street, Cleveland OH   | $1,199,000 / 31,158 SF                            | Reported vacant; five walk-in coolers and upgraded electrical. Confirm active load/recommissioning.        |
-| 320 Phillips Avenue, Toledo OH        | $1,000,000 / 53,847 SF                            | Kohler backup equipment reported; obtain electrical rating, permits and current load.                      |
-| 108 MacDade Boulevard, Collingdale PA | $775,000 header / $800,000 description; ~7,000 SF | Resolve price, current occupancy and active refrigeration.                                                 |
-| 4307 US Route 40 East, Lewisburg OH   | $3,233,500 / 129,340 SF                           | Reported 43,770 SF cold storage and backup generator; obtain live load, equipment rating/tier and permits. |
+Selection now favors documented power infrastructure and operating/tenant diligence over the former $1.5M price ceiling. Existing smaller leads remain in source history, not the current four. No measured DR MW has been established for any site. These are research priorities, not partner-qualified resources.
 
-Sources:
+| Candidate                          |     Asking | Power signal                                                                        |   Default DR scenario | Missing                                                                                           |
+| ---------------------------------- | ---------: | ----------------------------------------------------------------------------------- | --------------------: | ------------------------------------------------------------------------------------------------- |
+| 6800 North Chestnut St, Ravenna OH | On request | 10 MW incoming service reported; 22 MW expansion excluded                           |                  5 MW | Actual occupied-meter demand, tenant process commitments, current price; load-study conflict      |
+| 629 East Butler Rd, Butler PA      |      $6.5M | 5 MW three-phase service reported; partially leased                                 |                2.5 MW | Meter demand, tenant rights, safe curtailment plan and prior enrollment                           |
+| 2300 Montana Ave, Cincinnati OH    |      $5.5M | 2 MW available data-center capacity; backup generators; 75% campus leasing reported |                1.5 MW | Active data-center load, generator usable kW/fuel/tier, redundancy requirements and income rights |
+| 5 Sandstone Way, Dunbar PA         |       $11M | 14+ MW available site power; shell pending user fitout                              | 4 MW after activation | Energization, funded operating tenant, full fitout and future load; no current DR premium         |
 
-- https://crescorealestate.com/properties/1893-e-55th-street/
-- https://www.crexi.com/properties/1890268/ohio-1893-e-55th-street (vacancy)
-- https://www.crexi.com/properties/2215844/ohio-binksformer-carlisle-fluids
-- https://www.marcusmillichap.com/properties/198026/108-macdade-blvd
-- https://rimarketplace.com/listing/71192/industrial/lewisburg/oh
+Broker-authored and broker-syndicated sources:
 
-Wooster was removed for unclear sale availability and Porter for off-market status. Park Avenue was not added: direct recheck of https://www.crexi.com/properties/2366284/ohio-6000-park-ave-cleveland-oh-44105 showed Off-Market / Historical Flyer, superseding older indexed advertisements. Availability observations are not personal broker confirmations. All qualifying MW remain unknown; indicative offers and projected cash flows are separate scenario data documented in ../UNDERWRITING.md.
+- Ravenna: https://www.showcase.com/6800-n-chestnut-st-ravenna-oh-44266/37959305/ . Brochure link https://buildout.com/sharing/1548912-sale?file=3922420 could not be fetched. Indexed SVN syndication https://brevitas.com/p/4U5JofGP/chestnut-commerce-center reports live 10 MW and current income but 22 MW under load study; direct page requires login. Showcase says approved expansion. Neither expansion interpretation is capitalized; solar is not dispatchable DR demand. Broker Aaron Davis / SVN Summit: 330-221-7297.
+- Butler: https://www.crexi.com/properties/1151843/pennsylvania-629-e-butler-rd (direct page displays For Sale, $6.5M, service power); https://www.loopnet.com/Listing/629-E-Butler-Rd-Butler-PA/32121997/ (55% leased); https://naiburnsscalo.com/wp-content/uploads/2022/01/629-E-Butler-Offering-Memorandum-digital.pdf (West Penn Power). Chris Garrity / NAI Burns Scalo: 412-266-5865. Showcase direct URL redirected and was not relied on for active status.
+- Montana: https://cincinnatilisting.com/listings/2300-montana-ave-cincinnati-oh-45239/ (Active, $5.5M, 65,000 SF, 75% leased, backup generation); https://baxtel.com/listings/cincinnati-2-mw-data-center-office-campus (Duke Energy Ohio corroboration). Active available capacity does not establish tenant load or permission to curtail critical systems.
+- Sandstone: https://www.loopnet.com/Listing/5-Sandstone-way-Dunbar-PA/28499335/ (for sale $11M, shell availability, 101,300 SF, 14+ MW). Broker flyer https://images1.showcase.com/d2/an20rvtsuHRBHIXiU6khNPlJqzJr5V9IbX1aYyKdujc/document.pdf . SVN Three Rivers. Power is available-to-site marketing language, not an operating account tag.
 
-The original SQL acquisition migration and legacy seeds retain the historical four for reproducibility. No database changes have been applied. Reconcile archived pins with the current shortlist before enabling Supabase persistence.
+Excluded search leads: historic Maumee/Goldcoast data-center brochures without sufficiently clear current broker sale confirmation; Butler Showcase redirect superseded by direct Crexi; future generation/redevelopment land and out-of-PJM opportunities. No outreach sent. Personal broker confirmation, utility authorization and partner eligibility review remain next steps.
+
+Legacy SQL migration remains historical and tested against legacy seeds. Supabase stays deferred; reconcile archived pins before enabling persistence. Current homepage/API seed set uses the four new candidates. Source-reported infrastructure is held in evidence and screening metadata; qualification and verified-load fields remain null. Default modeled MW were chosen as scenario haircuts against service claims, not certified engineering estimates.

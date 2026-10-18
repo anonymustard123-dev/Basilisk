@@ -370,4 +370,190 @@ lewisburg.assets = [
     evidence_ids: ['lewisburg-listing'],
   },
 ];
-export const acquisitionSeeds: Facility[] = [east55, phillips, macdade, lewisburg];
+
+// MW-first shortlist: listing-reported infrastructure is separate from qualifying DR capacity.
+export const previousAcquisitionSeeds: Facility[] = [east55, phillips, macdade, lewisburg];
+const ravenna = property(
+  'acq-ravenna',
+  '6800 North Chestnut Street',
+  'Ravenna',
+  'OH',
+  '44266',
+  1,
+  0,
+  185000,
+  'https://www.showcase.com/6800-n-chestnut-st-ravenna-oh-44266/37959305/',
+  'svn:1548912',
+);
+Object.assign(ravenna.acquisition!, {
+  asking_price_usd: null,
+  price_status: 'unverified',
+  availability: 'advertised',
+  occupancy: 'occupied',
+  property_type: 'Heavy-power industrial campus',
+  reduction: 'possible',
+  verification_notes:
+    'SVN Summit syndicated sale listing advertises 10 MW incoming power on 69 kV service. Expansion descriptions conflict: one says 22 MW approved, another says load study underway; exclude expansion and 1 MW solar from DR MW. Asking price is undisclosed. Leased/occupied use is reported, not verified interval load.',
+} satisfies Partial<Acquisition>);
+ravenna.operator = 'Chestnut Commerce Center · tenants unconfirmed';
+ravenna.why = '10 MW incoming service reported; existing industrial campus with current income.';
+ravenna.missing =
+  'Actual occupied-meter load, controllable process load, DR history and asking price';
+ravenna.next_action =
+  'SVN Summit / Aaron Davis, 330-221-7297: request price, rent roll, bills/intervals, tags, single-line and utility confirmation of existing 10 MW; resolve expansion study.';
+ravenna.evidence = [
+  claim(
+    'ravenna-power',
+    'Incoming electrical service',
+    '10 MW via 69 kV line; asking price undisclosed',
+    ravenna.acquisition!.listing_url,
+    'Broker-syndicated sale advertisement. Incoming service is not measured load or qualifying DR.',
+  ),
+  claim(
+    'ravenna-expansion',
+    'Expansion / occupancy',
+    '22 MW expansion under study; solar and future capacity excluded',
+    'https://brevitas.com/p/4U5JofGP/chestnut-commerce-center',
+    'Indexed broker syndication reports current income and live 10 MW, but 22 MW under load study; direct page requires login. Expansion conflicts with Showcase approval language.',
+    'suggested',
+  ),
+];
+ravenna.evidence[1].conflict = true;
+const butler = property(
+  'acq-butler',
+  '629 East Butler Road',
+  'Butler',
+  'PA',
+  '16002',
+  2,
+  6500000,
+  200000,
+  'https://www.crexi.com/properties/1151843/pennsylvania-629-e-butler-rd',
+  'crexi:1151843',
+);
+Object.assign(butler.acquisition!, {
+  availability: 'advertised',
+  occupancy: 'occupied',
+  property_type: 'Heavy-power industrial / distribution',
+  reduction: 'possible',
+  verification_notes:
+    'NAI Burns Scalo listing shows For Sale at $6.5M, 200,000 SF and 5 MW of three-phase power into the building. LoopNet describes 55% leased. No interval demand, generator or curtailment commitment supplied. Broker OM identifies West Penn Power; account-level PJM mapping still required.',
+} satisfies Partial<Acquisition>);
+butler.operator = 'Multi-tenant industrial · operators unconfirmed';
+butler.why =
+  '5 MW power into the building reported; 200,000 SF industrial property with leased space.';
+butler.missing = 'Tenant-controlled reduction and active meter demand versus 5 MW service rating';
+butler.next_action =
+  'NAI Burns Scalo / Chris Garrity, 412-266-5865: request rent roll, tenant consent, interval demand/tags, enrollment history and a production-safe curtailment plan.';
+butler.evidence = [
+  claim(
+    'butler-power',
+    'Sale / incoming power',
+    '$6,500,000 · 200,000 SF · 5 MW three-phase service',
+    butler.acquisition!.listing_url,
+    'Current broker listing advertises service rating, not active or qualified reduction.',
+  ),
+  claim(
+    'butler-leases',
+    'Occupancy',
+    '55% leased',
+    'https://www.loopnet.com/Listing/629-E-Butler-Rd-Butler-PA/32121997/',
+    'Listing reports leased occupancy; tenant account data and rights not supplied.',
+  ),
+  claim(
+    'butler-utility',
+    'Utility',
+    'West Penn Power',
+    'https://naiburnsscalo.com/wp-content/uploads/2022/01/629-E-Butler-Offering-Memorandum-digital.pdf',
+    'Broker memorandum identifies utility, not account eligibility or measured load.',
+  ),
+];
+const montana = property(
+  'acq-montana',
+  '2300 Montana Avenue',
+  'Cincinnati',
+  'OH',
+  '45239',
+  3,
+  5500000,
+  65000,
+  'https://cincinnatilisting.com/listings/2300-montana-ave-cincinnati-oh-45239/',
+  'cincinnati:2300-montana',
+);
+montana.acquisition!.building_sqft = 65000;
+Object.assign(montana.acquisition!, {
+  availability: 'advertised',
+  occupancy: 'occupied',
+  property_type: 'Office campus / enterprise data center',
+  reduction: 'possible',
+  verification_notes:
+    'Broker page marked Active at $5.5M, 65,000 SF, 75% leased and approximately 2 MW available data-center power with backup generators. Available power is not current demand; generator kW, emissions tier, redundancy reserve and tenant rights are unknown. Duke Energy Ohio is reported by Baxtel; verify utility account and zone.',
+} satisfies Partial<Acquisition>);
+montana.operator = 'Multi-tenant campus · data-center operator unconfirmed';
+montana.why =
+  '2 MW data-center power reported with backup generators; campus advertised 75% leased.';
+montana.missing =
+  'Generator usable rating, live critical load, redundancy reserve and tenant consent';
+montana.next_action =
+  'Request current OM from listing broker: tenant/account consent, data-center interval demand, generator nameplates/permits, test logs and utility tags; confirm prior DR enrollment.';
+montana.evidence = [
+  claim(
+    'montana-power',
+    'Sale / data-center infrastructure',
+    '$5,500,000 · 65,000 SF · 2 MW available power · backup generators',
+    montana.acquisition!.listing_url,
+    'Broker page marked Active, 75% leased; available capacity is not verified DR.',
+  ),
+  claim(
+    'montana-utility',
+    'Utility / redundant systems',
+    'Duke Energy Ohio; backup generation',
+    'https://baxtel.com/listings/cincinnati-2-mw-data-center-office-campus',
+    'Listing corroboration; exact utility/account rights and generator rating require diligence.',
+  ),
+];
+montana.assets = [
+  {
+    ...phillips.assets[0],
+    id: 'montana-backup',
+    description: 'Backup generators reported · aggregate kW unknown',
+    evidence_ids: ['montana-power'],
+  },
+];
+const sandstone = property(
+  'acq-sandstone',
+  '5 Sandstone Way',
+  'Dunbar',
+  'PA',
+  '15431',
+  4,
+  11000000,
+  101300,
+  'https://www.loopnet.com/Listing/5-Sandstone-way-Dunbar-PA/28499335/',
+  'loopnet:28499335',
+);
+Object.assign(sandstone.acquisition!, {
+  availability: 'advertised',
+  occupancy: 'vacant',
+  property_type: 'Powered industrial shell',
+  reduction: 'possible',
+  verification_notes:
+    'SVN Three Rivers sale listing offers $11M, 101,300 SF industrial shell with 14+ MW power available to the site. Requires user specification/buildout; this is a future operating-load case, not current dispatchable demand. Exclude expansion potential from present DR. No backup generation established.',
+} satisfies Partial<Acquisition>);
+sandstone.operator = 'Shell · future operating tenant required';
+sandstone.why =
+  '14+ MW site power advertised; industrial shell with completed utility connections.';
+sandstone.missing =
+  'Funded operating tenant, actual energized capacity, buildout and future load profile';
+sandstone.next_action =
+  'SVN Three Rivers: obtain utility service/energization confirmation, full tenant fitout budget, lease-up and operating plan, then partner eligibility review. No current DR premium.';
+sandstone.evidence = [
+  claim(
+    'sandstone-power',
+    'Sale / power availability',
+    '$11,000,000 · 101,300 SF shell · 14+ MW available site power',
+    sandstone.acquisition!.listing_url,
+    'Broker sale listing describes shell space pending user fitout; available utility capacity is not active demand.',
+  ),
+];
+export const acquisitionSeeds: Facility[] = [ravenna, butler, montana, sandstone];
