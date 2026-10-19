@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import Image from 'next/image';
 import type { Facility } from '@/lib/model';
 import { money } from '@/lib/acquisitions';
 import type { OfferInputs } from '@/lib/underwriting';
@@ -28,15 +29,36 @@ export default function CandidateWorkspace({ facilities }: { facilities: Facilit
     <main className="candidate-workspace">
       <header className="quiet-header">
         <div className="quiet-brand">
-          BASILISK<span> / ACQUISITIONS</span>
+          <strong>BASILISK</strong>
+          <span>Acquisition intelligence</span>
         </div>
-        <span>Shortlist · 04</span>
+        <div className="header-signature">
+          <span>
+            PJM ORIGINATION<small>PRIVATE RESEARCH / 004</small>
+          </span>
+          <span className="basilisk-emblem">
+            <Image
+              src="/brand/basilisk-artwork.png"
+              alt="Basilisk serpent and eye logo"
+              width={1254}
+              height={1254}
+              sizes="180px"
+              priority
+            />
+          </span>
+        </div>
       </header>
       <section className="quiet-intro">
-        <p className="eyebrow">PJM · BEHIND THE METER</p>
+        <p className="eyebrow">
+          <span aria-hidden="true" /> PJM / BEHIND THE METER
+        </p>
         <h1>
-          Acquisition shortlist<span>.</span>
+          Acquisition <em>shortlist</em>
+          <span>.</span>
         </h1>
+        <span className="folio-count" aria-hidden="true">
+          04<span>SELECTED ASSETS</span>
+        </span>
       </section>
       <div className="shortlist-sort">
         <span>MW-first screening · operating scenarios</span>
@@ -54,7 +76,7 @@ export default function CandidateWorkspace({ facilities }: { facilities: Facilit
             r = offerScenario(f, defaultOffer(f)),
             earnings = demandEconomics(defaultOffer(f), defaultPurchasePrice(f));
           return (
-            <article className="quiet-card" key={f.id}>
+            <article className="quiet-card" key={f.id} data-index={`0${index + 1}`}>
               <div className="quiet-card-meta">
                 <span>
                   0{index + 1} / {f.city}, {f.state}
