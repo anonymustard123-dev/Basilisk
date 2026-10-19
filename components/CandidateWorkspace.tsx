@@ -28,48 +28,24 @@ export default function CandidateWorkspace({ facilities }: { facilities: Facilit
   return (
     <main className="candidate-workspace">
       <header className="quiet-header">
-        <div className="quiet-brand">
-          <strong>BASILISK</strong>
-          <span>Acquisition intelligence</span>
+        <div className="basilisk-emblem">
+          <Image
+            src="/brand/basilisk-logo.svg"
+            alt="Basilisk serpent and eye logo"
+            width={86}
+            height={86}
+            unoptimized
+            priority
+          />
         </div>
-        <div className="header-signature">
-          <span>
-            PJM ORIGINATION<small>PRIVATE RESEARCH / 004</small>
-          </span>
-          <span className="basilisk-emblem">
-            <Image
-              src="/brand/basilisk-logo.svg"
-              alt="Basilisk serpent and eye logo"
-              width={86}
-              height={86}
-              unoptimized
-              priority
-            />
-          </span>
-        </div>
-      </header>
-      <section className="quiet-intro">
-        <p className="eyebrow">
-          <span aria-hidden="true" /> PJM / BEHIND THE METER
-        </p>
-        <h1>
-          Acquisition <em>shortlist</em>
-          <span>.</span>
-        </h1>
-        <span className="folio-count" aria-hidden="true">
-          04<span>SELECTED ASSETS</span>
-        </span>
-      </section>
-      <div className="shortlist-sort">
-        <span>MW-first screening · operating scenarios</span>
-        <label>
-          Sort
+        <label className="header-sort">
+          <span>Sort</span>
           <select value={sort} onChange={(e) => setSort(e.target.value)}>
             <option value="priority">Research priority</option>
             <option value="yield">Modeled DR Yield</option>
           </select>
         </label>
-      </div>
+      </header>
       <section aria-label="Four acquisition candidates" className="quiet-grid">
         {ordered.map((f, index) => {
           const a = f.acquisition!,

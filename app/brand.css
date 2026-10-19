@@ -713,3 +713,52 @@ body {
     transform: none;
   }
 }
+/* Compact logo-only header; the shortlist begins directly below it. */
+.candidate-workspace .quiet-header {
+  min-height: 112px;
+  margin-bottom: 26px;
+}
+.candidate-workspace .quiet-header > .basilisk-emblem {
+  width: 72px;
+  height: 72px;
+}
+.header-sort {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font:
+    10px 'IBM Plex Mono',
+    monospace;
+  color: var(--muted);
+}
+.header-sort select {
+  width: auto;
+  min-width: 175px;
+  padding: 10px 12px;
+  border: 1px solid #36492f;
+  border-radius: 2px;
+  background: #152019;
+  color: var(--text);
+  font:
+    10px 'IBM Plex Mono',
+    monospace;
+}
+@media (max-width: 680px) {
+  .candidate-workspace .quiet-header {
+    min-height: 94px;
+    margin-bottom: 20px;
+  }
+  .candidate-workspace .quiet-header > .basilisk-emblem {
+    width: 60px;
+    height: 60px;
+  }
+  .header-sort {
+    gap: 8px;
+    font-size: 9px;
+  }
+  .header-sort select {
+    min-width: 0;
+    max-width: 190px;
+    font-size: 10px;
+  }
+}
