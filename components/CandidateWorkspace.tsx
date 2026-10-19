@@ -38,11 +38,11 @@ export default function CandidateWorkspace({ facilities }: { facilities: Facilit
           </span>
           <span className="basilisk-emblem">
             <Image
-              src="/brand/basilisk-artwork.png"
+              src="/brand/basilisk-logo.svg"
               alt="Basilisk serpent and eye logo"
-              width={1254}
-              height={1254}
-              sizes="180px"
+              width={86}
+              height={86}
+              unoptimized
               priority
             />
           </span>
