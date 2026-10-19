@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import type { Facility } from '@/lib/model';
-import { money } from '@/lib/acquisitions';
+import { money, availabilityLabel } from '@/lib/acquisitions';
+import { CapacityBars, ProfitBridge, PropertyPhoto } from './PropertyVisuals';
 import type { OfferInputs } from '@/lib/underwriting';
 import {
   defaultOffer,
@@ -53,11 +54,14 @@ export default function CandidateWorkspace({ facilities }: { facilities: Facilit
             earnings = demandEconomics(defaultOffer(f), defaultPurchasePrice(f));
           return (
             <article className="quiet-card" key={f.id} data-index={`0${index + 1}`}>
+              <PropertyPhoto f={f} priority={index < 2} />
               <div className="quiet-card-meta">
                 <span>
                   0{index + 1} / {f.city}, {f.state}
                 </span>
-                <span>Advertised for sale</span>
+                <span>
+                  {f.id === 'acq-ravenna' ? 'Confirm availability' : availabilityLabel(f)}
+                </span>
               </div>
               <h2>
                 <button onClick={() => setSelection({ f, tab: 'Research' })}>{f.name}</button>
@@ -65,7 +69,7 @@ export default function CandidateWorkspace({ facilities }: { facilities: Facilit
               <p className="quiet-type">
                 {a.property_type} · {a.building_sqft?.toLocaleString()} SF
               </p>
-              <p className="power-signal">{powerSignal(f)}</p>
+              <CapacityBars f={f} modeled={earnings.mw} />
               <div className="card-offer-pair">
                 <div>
                   <span>Asking{a.price_status === 'disputed' ? ' · price conflict' : ''}</span>
@@ -145,6 +149,19 @@ function Research({ f }: { f: Facility }) {
   return (
     <div className="dossier-content">
       <p className="dossier-lead">{f.why}</p>
+      {f.id === 'acq-ravenna' && (
+        <p className="dossier-small">
+          Availability conflict: Showcase labels this off market; the{' '}
+          <a
+            href="https://properties.zoomprospector.com/ohio/property/6800-N-Chestnut-St-Ravenna-Ohio/2D8CD8C8-2E94-4734-9A89-225091961BF0"
+            target="_blank"
+            rel="noreferrer"
+          >
+            economic-development listing
+          </a>{' '}
+          still advertises a sale. Confirm with SVN before proceeding.
+        </p>
+      )}
       <p className="power-signal">{powerSignal(f)}</p>
       <dl className="dossier-facts">
         <div>
@@ -271,25 +288,18 @@ function Underwriting({ f }: { f: Facility }) {
             Scenario MW: {earnings.mw} · Purchase basis: {money(purchasePrice)} · Income rights and
             eligible demand unverified.
           </p>
+          <CapacityBars f={f} modeled={earnings.mw} />
+          <ProfitBridge
+            gross={earnings.gross}
+            receipts={earnings.receipts}
+            retained={earnings.retained}
+            cost={i.annualCost}
+            realization={realization}
+            share={i.share}
+          />
           <details>
-            <summary>Revenue → profit</summary>
+            <summary>Additional profit metrics</summary>
             <dl className="dossier-facts">
-              <div>
-                <dt>Full customer capacity revenue / year</dt>
-                <dd>{money(earnings.gross)}</dd>
-              </div>
-              <div>
-                <dt>After {realization}% receipt realization</dt>
-                <dd>{money(earnings.receipts)}</dd>
-              </div>
-              <div>
-                <dt>Our {i.share}% share / year</dt>
-                <dd>{money(earnings.retained)}</dd>
-              </div>
-              <div>
-                <dt>Annual operating costs</dt>
-                <dd>−{money(i.annualCost)}</dd>
-              </div>
               <div>
                 <dt>Our net / month · annual average</dt>
                 <dd>{money(earnings.annualNet / 12)}</dd>

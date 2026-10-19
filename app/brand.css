@@ -718,6 +718,183 @@ body {
   min-height: 112px;
   margin-bottom: 26px;
 }
+
+/* Listing photography and shared-scale capacity comparisons. */
+.property-photo {
+  position: relative;
+  margin: -27px -28px 24px;
+  overflow: hidden;
+  background: #18211b;
+}
+.property-photo img {
+  display: block;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  filter: saturate(0.75);
+}
+.property-photo figcaption {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  padding: 5px 7px;
+  background: #09110de6;
+  border: 1px solid #ffffff24;
+  font:
+    8px 'IBM Plex Mono',
+    monospace;
+}
+.property-photo a {
+  color: #f0f1e7;
+  text-decoration: none;
+}
+.property-photo a:hover {
+  text-decoration: underline;
+}
+.photo-unavailable {
+  height: 200px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+.capacity-bars {
+  display: grid;
+  gap: 12px;
+  margin: 25px 0;
+}
+.capacity-row > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 6px;
+  font:
+    10px 'IBM Plex Mono',
+    monospace;
+  color: var(--muted);
+}
+.capacity-row strong {
+  white-space: nowrap;
+  font-weight: 400;
+  color: #c1cebd;
+}
+.capacity-row.modeled strong {
+  color: var(--accent);
+}
+.capacity-track {
+  height: 5px;
+  background: #ffffff09;
+}
+.capacity-track span {
+  display: block;
+  height: 100%;
+  background: #74846e;
+}
+.modeled .capacity-track span {
+  background: var(--accent);
+}
+.profit-bridge {
+  margin: 28px 0;
+  padding: 24px;
+  border: 1px solid #3e5137;
+  background: #0b140e;
+}
+.bridge-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.bridge-title h3 {
+  margin: 0;
+  font-size: 22px;
+}
+.bridge-title > span,
+.bridge-basis {
+  font:
+    9px 'IBM Plex Mono',
+    monospace;
+  color: var(--muted);
+}
+.bridge-rows {
+  display: grid;
+  gap: 17px;
+}
+.bridge-label {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12px;
+  margin-bottom: 7px;
+}
+.bridge-label strong {
+  font:
+    12px 'IBM Plex Mono',
+    monospace;
+  white-space: nowrap;
+}
+.bridge-track {
+  position: relative;
+  height: 13px;
+  background: #ffffff05;
+}
+.bridge-track span {
+  display: block;
+  position: absolute;
+  height: 100%;
+  background: #768a6c;
+}
+.bridge-track i {
+  position: absolute;
+  height: 100%;
+  width: 1px;
+  background: #718366;
+}
+.bridge-row.deduction .bridge-track span {
+  background: #b89f72;
+}
+.bridge-row.net .bridge-track span {
+  background: var(--accent);
+}
+.bridge-row.net .bridge-label {
+  color: var(--accent);
+}
+.bridge-row.loss .bridge-track span {
+  background: #d8917c;
+}
+.bridge-row.loss .bridge-label {
+  color: #e5ab96;
+}
+.bridge-basis {
+  margin: 20px 0 0;
+  line-height: 1.7;
+}
+.quiet-card:has(.property-photo)::before {
+  z-index: 1;
+}
+@media (max-width: 680px) {
+  .property-photo {
+    margin-left: -22px;
+    margin-right: -22px;
+    margin-top: -23px;
+  }
+  .property-photo img,
+  .photo-unavailable {
+    height: 170px;
+  }
+  .profit-bridge {
+    padding: 18px;
+  }
+  .bridge-title {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .capacity-row > div:first-child {
+    font-size: 9px;
+  }
+}
 .candidate-workspace .quiet-header > .basilisk-emblem {
   width: 72px;
   height: 72px;
